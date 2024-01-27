@@ -1,9 +1,20 @@
-import {Client, Collection, GatewayIntentBits } from "discord.js"
+import {Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js"
 import { exitMember, newMember } from "./services/Member";
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config();
+
+const GUILD_ID = process.env.GUILD_ID;
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+
+if (!GUILD_ID) {
+    throw new Error("Missing GUILD_ID");
+}
+
+if (!DISCORD_TOKEN) {
+    throw new Error("Missing DISCORD_TOKEN");
+}
 
 class MyClient extends Client {
     commands: Collection<string, any>;
@@ -23,6 +34,7 @@ const client = new MyClient({
     ],
 });
 
+const commands = [];
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
 
@@ -35,20 +47,41 @@ for (const folder of commandFolders) {
 
         if ("data" in command && 'execute' in command){
             client.commands.set(command.data.name, command);
+            commands.push(command.data.toJSON());
         } else {
             console.log("Error loading command: " + file);
         }
     }
 }
 
+// const rest = new REST().setToken(process.env.DISCORD_TOKEN as string);
+
+// (async () => {
+//     try {
+//         const data = await rest.put(
+//             Routes.applicationGuildCommands(process.env.CLIENT_ID as string, process.env.GUILD_ID as string),
+//             { body: commands },
+//         );
+
+//         console.log("Successfully registered application commands.");
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })();
+
+// client.once("ready", () => {
+//     console.log("Bot is Ready!");
+// })
+
 client.once("ready", () => {
     console.log("Bot is Ready!");
-})
+});
 
 client.on("interactionCreate", async (interaction: any) => {
     if (!interaction.isCommand()) return;
 
-    if (interaction.guild.id !== process.env.GUILD_ID) return;
+    if (interaction.guild.id !== GUILD_ID) return;
+
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) return;
@@ -56,21 +89,25 @@ client.on("interactionCreate", async (interaction: any) => {
     try {
         await command.execute(interaction);
     } catch (error) {
-        if (interaction.replied || interaction.deferred){
-            await interaction.followUp({content: "There was an error while executing this command!", ephemeral: true});
-        } else {
-            await interaction.reply({content: "There was an error while executing this command!", ephemeral: true});
-        }
+        console.log(error);
     }
 });
 
 client.on("guildMemberAdd", async (member: any) => {
-    await newMember(member);
+    try {
+        await newMember(member);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 client.on("guildMemberRemove", async (member: any) => {
-    console.log("Member left!");
-    await exitMember(member);
+    try {
+        console.log("member left");
+        await exitMember(member);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(DISCORD_TOKEN);
