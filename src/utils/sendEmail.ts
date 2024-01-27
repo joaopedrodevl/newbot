@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import LogService from '../services/LogService';
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -13,6 +14,8 @@ if (!RESEND_TOKEN) {
 if (!RESEND_FROM) {
   throw new Error('Missing RESEND_FROM');
 }
+
+const logService = new LogService();
 
 const resend = new Resend(RESEND_TOKEN);
 
@@ -36,6 +39,7 @@ export const sendEmail = async (to: string, code: string) => {
   });
 
   if (error) {
+    await logService.create(error.message)
     return console.error({ error });
   }
 

@@ -1,5 +1,6 @@
 import {Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js"
 import { exitMember, newMember } from "./services/Member";
+import LogService from "./services/LogService";
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -15,6 +16,8 @@ if (!GUILD_ID) {
 if (!DISCORD_TOKEN) {
     throw new Error("Missing DISCORD_TOKEN");
 }
+
+const logService = new LogService();
 
 class MyClient extends Client {
     commands: Collection<string, any>;
@@ -88,25 +91,27 @@ client.on("interactionCreate", async (interaction: any) => {
 
     try {
         await command.execute(interaction);
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        await logService.create(error.message);
     }
 });
 
 client.on("guildMemberAdd", async (member: any) => {
     try {
         await newMember(member);
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        await logService.create(error.message);
     }
 });
 
 client.on("guildMemberRemove", async (member: any) => {
     try {
-        console.log("member left");
         await exitMember(member);
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        await logService.create(error.message);
     }
 });
 

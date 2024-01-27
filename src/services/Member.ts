@@ -1,6 +1,7 @@
 import { findStudent, findTeacher, formatName } from "../utils/findPerson";
 import { generateCode } from "../utils/generateCode";
 import { sendEmail } from "../utils/sendEmail";
+import LogService from "./LogService";
 import UserService from "./UserService";
 import Discord from "discord.js";
 
@@ -17,6 +18,7 @@ if (!TEACHER_ROLE_ID) {
 
 const userService = new UserService();
 const pendingAuthentications = new Map();
+const logService = new LogService();
 
 export const newMember = async (member: any): Promise<any> => {
     const filter = (m: any) => m.author.id === member.user.id;
@@ -48,10 +50,11 @@ export const newMember = async (member: any): Promise<any> => {
             await member.send("Você já está em processo de autenticação!");
             await member.send("Digite seu email acadêmico: ");
             return;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             await member.send("Você foi expulso do servidor. Erro ao autenticar!");
             await member.kick("Erro ao autenticar!");
+            await logService.create(error.message);
         }
     };
 
@@ -64,7 +67,7 @@ export const newMember = async (member: any): Promise<any> => {
         const content = await authPromise as Discord.Collection<string, Discord.Message>;
         const email = content.first()?.content.trim().toLowerCase();
 
-        if (!email || !email.endsWith("@academico.ifpb.edu.br")) {
+        if (!email) {
             await member.send("Você foi expulso do servidor por não inserir um email!");
             await member.kick("Email inválido!");
             return;
@@ -121,19 +124,20 @@ export const newMember = async (member: any): Promise<any> => {
             await member.send("Você foi adicionado ao cargo de professor!");
             return;
         }
-    } catch (error) {
+    } catch (error: any) {
+        console.log(error);
         await member.send("Você foi expulso do servidor por não responder a tempo!");
         await member.kick("Não respondeu a tempo!");
         await userService.deleteByDiscordId(member.user.id);
+        await logService.create(error.message);
     }
 }
 
 export const exitMember = async (member: any): Promise<any> => {
     try {
-        console.log("exitMember");
         await userService.deleteByDiscordId(member.user.id);
-        console.log("exitMember2");
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        await logService.create(error.message);
     }
 }
