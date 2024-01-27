@@ -1,3 +1,4 @@
+import LogService from "../services/LogService";
 import { readCSVFile } from "./readCSVFile";
 
 export interface Teacher {
@@ -16,16 +17,28 @@ export interface Student {
     "E-mail academico": string;
 }
 
+const logService = new LogService();
+
 export const findTeacher = async (email: string): Promise<Teacher | undefined> => {
-    email = email.toLowerCase().trim();
-    const data: Array<Teacher> = await readCSVFile("professores.csv") as Array<Teacher>;
-    return data.find((teacher) => teacher["E-mail"] === email);
+    try {
+        email = email.toLowerCase().trim();
+        const data: Array<Teacher> = await readCSVFile("professores.csv") as Array<Teacher>;
+        return data.find((teacher) => teacher["E-mail"] === email);
+    } catch (error: any) {
+        console.log(error);
+        await logService.create(error.message);
+    }
 }
 
 export const findStudent = async (email: string) => {
-    email = email.toLowerCase().trim();
-    const data: Array<Student> = await readCSVFile("alunos.csv") as Array<Student>;
-    return data.find((student) => student["E-mail academico"] === email);
+    try {
+        email = email.toLowerCase().trim();
+        const data: Array<Student> = await readCSVFile("alunos.csv") as Array<Student>;
+        return data.find((student) => student["E-mail academico"] === email);
+    } catch (error: any) {
+        console.log(error);
+        await logService.create(error.message);
+    }
 }
 
 export const formatName = (name: string) => {

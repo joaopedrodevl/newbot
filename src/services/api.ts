@@ -1,4 +1,7 @@
 import axios from "axios"
+import LogService from "./LogService";
+
+const logService = new LogService();
 
 export async function searchQuestions(query: string) {
     try {
@@ -15,7 +18,8 @@ export async function searchQuestions(query: string) {
         return response.data.items.slice(0, 5).map((question: any) => {
             return `[${question.title}](${question.link})`;
         }).join("\n");
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        await logService.create(error.message);
     }
 }
