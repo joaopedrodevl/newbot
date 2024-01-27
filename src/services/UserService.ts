@@ -7,12 +7,32 @@ export default class UserService {
         this.prisma = new PrismaClient();
     }
 
-    public async create(email: string, code: string, discord_id: string): Promise<any> {
+    public async create(email: string, code: string, discord_id: string, type: string): Promise<any> {
+        const existingUser = await this.prisma.user.findUnique({
+            where: {
+                discord_id: discord_id,
+            }
+        })
+
+        if (existingUser) {
+            return await this.prisma.user.update({
+                where: {
+                    discord_id: discord_id,
+                },
+                data: {
+                    email: email,
+                    code: code,
+                    type: type,
+                }
+            })
+        }
+        
         return await this.prisma.user.create({
             data: {
-                academic_email: email,
+                email: email,
                 code: code,
                 discord_id: discord_id,
+                type: type,
             }
         })
     }
@@ -20,7 +40,15 @@ export default class UserService {
     public async findByEmail(email: string): Promise<any> {
         return await this.prisma.user.findUnique({
             where: {
-                academic_email: email,
+                email: email,
+            }
+        })
+    }
+
+    public async findByDiscordId(discord_id: string): Promise<any> {
+        return await this.prisma.user.findUnique({
+            where: {
+                discord_id: discord_id,
             }
         })
     }
@@ -34,10 +62,18 @@ export default class UserService {
     }
 
     public async deleteByDiscordId(discord_id: string): Promise<any> {
-        return await this.prisma.user.delete({
+        const user = await this.prisma.user.findUnique({
             where: {
                 discord_id: discord_id,
             }
         })
+
+        if (!user) return;
+
+        return await this.prisma.user.delete({
+            where: {
+                discord_id: discord_id,
+            }
+        });
     }
 }
