@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import LogService from '../services/LogService';
+import path from 'path';
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -19,6 +20,12 @@ const logService = new LogService();
 
 const resend = new Resend(RESEND_TOKEN);
 
+/**
+ * Sends an email with a verification code.
+ * @param to - The recipient's email address.
+ * @param code - The verification code to be sent.
+ * @returns A Promise that resolves to the result of sending the email.
+ */
 export const sendEmail = async (to: string, code: string) => {
   const { data, error } = await resend.emails.send({
     from: RESEND_FROM as string,

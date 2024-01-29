@@ -6,6 +6,12 @@ const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config();
 
+if (process.env.NODE_ENV === 'production') {
+    dotenv.config({ path: path.resolve(__dirname, '../.env.production') });
+} else {
+    dotenv.config({ path: path.resolve(__dirname, '../.env.development') });
+}
+
 const GUILD_ID = process.env.GUILD_ID;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 

@@ -41,6 +41,11 @@ export const findStudent = async (email: string) => {
     }
 }
 
+/**
+ * Formats a name by extracting the first and last name.
+ * @param name - The name to be formatted.
+ * @returns The formatted name.
+ */
 export const formatName = (name: string) => {
     const nameSplit = name.split(" ");
     return nameSplit[0] + " " + nameSplit[nameSplit.length - 1];
