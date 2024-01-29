@@ -1,0 +1,4 @@
+MAIN=index.js
+MEMORY=1024
+VERSION=recommended
+DISPLAY_NAME=EC BOT

@@ -1,9 +1,6 @@
 import { Resend } from 'resend';
 import LogService from '../services/LogService';
-import path from 'path';
 
-const dotenv = require('dotenv');
-dotenv.config();
 
 const RESEND_TOKEN = process.env.RESEND_TOKEN;
 const RESEND_FROM = process.env.RESEND_FROM;

@@ -20,6 +20,11 @@ const userService = new UserService();
 const pendingAuthentications = new Map();
 const logService = new LogService();
 
+/**
+ * Creates a new member in the server and initiates the authentication process.
+ * @param member - The member object representing the user joining the server.
+ * @returns A Promise that resolves when the authentication process is completed.
+ */
 export const newMember = async (member: any): Promise<any> => {
     const filter = (m: any) => m.author.id === member.user.id;
     const dmChannel = await member.user.createDM();
@@ -133,6 +138,11 @@ export const newMember = async (member: any): Promise<any> => {
     }
 }
 
+/**
+ * Removes a member from the system.
+ * @param member - The member to be removed.
+ * @returns A promise that resolves to the result of the operation.
+ */
 export const exitMember = async (member: any): Promise<any> => {
     try {
         await userService.deleteByDiscordId(member.user.id);

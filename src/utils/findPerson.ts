@@ -19,6 +19,11 @@ export interface Student {
 
 const logService = new LogService();
 
+/**
+ * Finds a teacher by email.
+ * @param email - The email of the teacher.
+ * @returns A Promise that resolves to the found teacher, or undefined if not found.
+ */
 export const findTeacher = async (email: string): Promise<Teacher | undefined> => {
     try {
         email = email.toLowerCase().trim();
@@ -30,6 +35,11 @@ export const findTeacher = async (email: string): Promise<Teacher | undefined> =
     }
 }
 
+/**
+ * Finds a student by academic email.
+ * @param email - The academic email of the student to be searched.
+ * @returns The student found or undefined if not found.
+ */
 export const findStudent = async (email: string) => {
     try {
         email = email.toLowerCase().trim();

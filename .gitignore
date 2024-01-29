@@ -2,7 +2,6 @@
 .env.prod
 .env.dev
 node_modules
-.env.production
 csv
 prisma
 dist

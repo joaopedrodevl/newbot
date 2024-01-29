@@ -1,16 +1,9 @@
+import "./config";
 import {Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js"
 import { exitMember, newMember } from "./services/Member";
 import LogService from "./services/LogService";
 const fs = require("fs");
 const path = require("path");
-const dotenv = require("dotenv");
-dotenv.config();
-
-if (process.env.NODE_ENV === 'production') {
-    dotenv.config({ path: path.resolve(__dirname, '../.env.production') });
-} else {
-    dotenv.config({ path: path.resolve(__dirname, '../.env.development') });
-}
 
 const GUILD_ID = process.env.GUILD_ID;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
