@@ -56,6 +56,7 @@ export const newMember = async (member: any): Promise<any> => {
             await member.send("Digite seu email acadêmico: ");
             return;
         } catch (error: any) {
+            pendingAuthentications.delete(member.user.id);
             console.log(error);
             await member.send("Você foi expulso do servidor. Erro ao autenticar!");
             await member.kick("Erro ao autenticar!");
@@ -73,6 +74,7 @@ export const newMember = async (member: any): Promise<any> => {
         const email = content.first()?.content.trim().toLowerCase();
 
         if (!email) {
+            pendingAuthentications.delete(member.user.id);
             await member.send("Você foi expulso do servidor por não inserir um email!");
             await member.kick("Email inválido!");
             return;
@@ -80,6 +82,7 @@ export const newMember = async (member: any): Promise<any> => {
 
         const findUser = await userService.findByEmail(email);
         if (findUser) {
+            pendingAuthentications.delete(member.user.id);
             await member.send("Você foi expulso do servidor por já estar cadastrado!");
             await member.kick("Já está cadastrado!");
             return;
@@ -88,6 +91,7 @@ export const newMember = async (member: any): Promise<any> => {
         const findStudentData = await findStudent(email);
         const findTeacherData = await findTeacher(email);
         if (!findStudentData && !findTeacherData) {
+            pendingAuthentications.delete(member.user.id);
             await member.send("Você foi expulso do servidor por inserir um email inválido!");
             await member.kick("Email não encontrado!");
             return;
@@ -130,6 +134,7 @@ export const newMember = async (member: any): Promise<any> => {
             return;
         }
     } catch (error: any) {
+        pendingAuthentications.delete(member.user.id);
         console.log(error);
         await member.send("Você foi expulso do servidor por não responder a tempo!");
         await member.kick("Não respondeu a tempo!");

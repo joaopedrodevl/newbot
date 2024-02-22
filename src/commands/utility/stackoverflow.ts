@@ -2,9 +2,6 @@ import { SlashCommandBuilder } from "discord.js";
 import { searchQuestions } from "../../services/api";
 import LogService from "../../services/LogService";
 
-const dotenv = require("dotenv");
-dotenv.config();
-
 const STACKOVERFLOW_ID = process.env.STACKOVERFLOW_ID;
 
 if (!STACKOVERFLOW_ID) {

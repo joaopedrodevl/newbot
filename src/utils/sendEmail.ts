@@ -1,7 +1,6 @@
 import { Resend } from 'resend';
 import LogService from '../services/LogService';
 
-
 const RESEND_TOKEN = process.env.RESEND_TOKEN;
 const RESEND_FROM = process.env.RESEND_FROM;
 

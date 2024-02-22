@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "dev": "cross-env NODE_ENV=development && ts-node-dev --respawn ./src/index.ts --transpileOnly --ignore-watch node_modules",
-    "start": "cross-env NODE_ENV=production && npx prisma migrate deploy && node ./dist/index.js"
+    "start": "cross-env NODE_ENV=production && npx node ./dist/index.js",
+    "prisma:deploy": "dotenv -e .env.prod.local -- npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,10 @@
     "csv-parser": "^3.0.0",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
-    "resend": "^3.1.0"
+    "extract-zip": "^2.0.1",
+    "node-fetch": "^3.3.2",
+    "resend": "^3.1.0",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.7",

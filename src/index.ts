@@ -1,5 +1,5 @@
 import "./config";
-import {Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js"
+import { Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js"
 import { exitMember, newMember } from "./services/Member";
 import LogService from "./services/LogService";
 const fs = require("fs");
@@ -47,7 +47,7 @@ for (const folder of commandFolders) {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath);
 
-        if ("data" in command && 'execute' in command){
+        if ("data" in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
             commands.push(command.data.toJSON());
         } else {
@@ -74,10 +74,6 @@ for (const folder of commandFolders) {
 // client.once("ready", () => {
 //     console.log("Bot is Ready!");
 // })
-
-client.once("ready", () => {
-    console.log("Bot is Ready!");
-});
 
 client.on("interactionCreate", async (interaction: any) => {
     if (!interaction.isCommand()) return;
@@ -112,6 +108,10 @@ client.on("guildMemberRemove", async (member: any) => {
         console.log(error);
         await logService.create(error.message);
     }
+});
+
+client.once("ready", () => {
+    console.log("Bot is Ready!");
 });
 
 client.login(DISCORD_TOKEN);
